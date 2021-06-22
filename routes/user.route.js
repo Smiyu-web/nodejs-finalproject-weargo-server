@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs"); // change password to #
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user.model");
 
@@ -61,8 +62,11 @@ router.post("/login", async (req, res, next) => {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SIGN);
+
     res.json({
       msg: `Welcome ${user.name}`,
+      token: token,
       user: {
         id: user._id,
         name: user.name,
@@ -75,12 +79,12 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.get("/", async (req, res, next) => {
-  const user = await User.findById(req.user);
+  const user = await User.find();
   if (!user) {
-    res.json({ msg: "User doesn't exist" });
+    res.json({ msg: "No users" });
   }
   res.json({
-    msg: "Hi there",
+    users: users,
   });
 });
 
