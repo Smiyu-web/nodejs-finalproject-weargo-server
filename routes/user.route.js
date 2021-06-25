@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs"); // change password to #
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user.model");
+const auth = require("../middlewares/auth");
 
 router.post("/signup", async (req, res, next) => {
   try {
@@ -78,13 +79,34 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res, next) => {
-  const user = await User.find();
-  if (!user) {
-    res.json({ msg: "No users" });
+router.post("/tokenIsValid", async (req, res, next) => {
+  try {
+    const token = req.header("x-auth-token");
+    if (!token) {
+      return res.json(false);
+    }
+    const verified = jwt.verify(token, process.env.JWT_SIGN);
+    if (!verified) {
+      return res.json(false);
+    }
+    const user = await User.findById(verified.id);
+    if (!user) {
+      return res.json(flase);
+    }
+
+    console.log("verified!");
+    return res.json(true);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-  res.json({
-    users: users,
+});
+
+router.get("/", auth, async (req, res, next) => {
+  const user = await User.findById(req.user);
+
+  console.log(user);
+  return res.json({
+    users: user,
   });
 });
 
