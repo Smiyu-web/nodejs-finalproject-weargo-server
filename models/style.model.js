@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const styleSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+  },
   title: {
     type: String,
     required: true,
@@ -16,8 +19,9 @@ const styleSchema = new mongoose.Schema({
   tags: {
     type: [String],
   },
-  userId: {
+  image: {
     type: String,
+    require: true,
   },
   likeCount: {
     type: Number,

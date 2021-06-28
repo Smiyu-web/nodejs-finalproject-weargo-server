@@ -1,5 +1,17 @@
 const router = require("express").Router();
+const multer = require("multer");
 const Style = require("../models/style.model");
+
+const storage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, "../../frontend/public/uploads/");
+  },
+  filename: (req, file, callback) => {
+    callback(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.get("/", async (req, res, next) => {
   try {
@@ -10,19 +22,22 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/add-style", async (req, res, next) => {
+router.post("/add-style", upload.single("image"), async (req, res, next) => {
   try {
-    let { title, season, weather, userId, tags, likeCount } = req.body;
+    let { title, season, weather, userId, tags, likeCount, image } = req.body;
     console.log(req.body);
     if (!title) {
       return res.status(400).json({ msg: "Please fill out title" });
     }
+
     const newStyle = new Style({
       title: title,
       season: season,
       weather: weather,
       userId: userId,
       tags: tags,
+      image: req.file.originalname,
+      // image: image,
       likeCount: likeCount,
     });
     const savedStyle = await newStyle.save();
