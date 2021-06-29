@@ -2,16 +2,17 @@ const router = require("express").Router();
 const multer = require("multer");
 const Style = require("../models/style.model");
 
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, "../../frontend/public/uploads/");
-  },
-  filename: (req, file, callback) => {
-    callback(null, file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, callback) => {
+//     callback(null, "/uploads/images");
+//   },
+//   filename: (req, file, callback) => {
+//     callback(null, file.originalname);
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
+const upload = multer({ dest: __dirname + "/uploads/" });
 
 router.get("/", async (req, res, next) => {
   try {
@@ -37,7 +38,6 @@ router.post("/add-style", upload.single("image"), async (req, res, next) => {
       userId: userId,
       tags: tags,
       image: req.file.originalname,
-      // image: image,
       likeCount: likeCount,
     });
     const savedStyle = await newStyle.save();
