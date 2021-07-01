@@ -12,7 +12,10 @@ const Style = require("../models/style.model");
 // });
 
 // const upload = multer({ storage: storage });
-const upload = multer({ dest: __dirname + "/uploads/" });
+// const upload = multer({ dest: __dirname + "/uploads/" });
+const upload = multer({
+  dest: __dirname + "../../../frontend/public/uploads",
+});
 
 router.get("/", async (req, res, next) => {
   try {
