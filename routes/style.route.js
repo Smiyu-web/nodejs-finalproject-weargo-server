@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const multer = require("multer");
 const Style = require("../models/style.model");
+const mongoose = require("mongoose");
 
 // const storage = multer.diskStorage({
 //   destination: (req, file, callback) => {
@@ -49,6 +50,18 @@ router.post("/add-style", upload.single("image"), async (req, res, next) => {
     console.log(err);
     res.status(500).json({ error: err.message });
   }
+});
+
+router.patch("/:id", async (req, res, next) => {
+  const { id } = req.params;
+  const { title, season, weather, tags, image } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No data with id: ${id}`);
+  const updatedStyle = { title, season, weather, tags, image, _id: id };
+  await Style.findByIdAndUpdate(id, updatedStyle, { new: true });
+
+  res.json(updatedStyle);
 });
 
 router.patch("/:id/likePost", async (req, res, next) => {
