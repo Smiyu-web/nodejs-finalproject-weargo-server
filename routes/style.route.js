@@ -64,6 +64,17 @@ router.patch("/:id", async (req, res, next) => {
   res.json(updatedStyle);
 });
 
+router.delete("/:id", async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send("No post with id");
+
+  await Style.findByIdAndRemove(id);
+
+  res.json({ message: "Post deleted successfully." });
+});
+
 router.patch("/:id/likePost", async (req, res, next) => {
   try {
     const { id } = req.params;
