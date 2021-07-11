@@ -108,4 +108,6 @@ router.get("/", auth, async (req, res, next) => {
   });
 });
 
+// router.patch("/:id/likedPost", async (req, res, next) => {});
+
 module.exports = router;

@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     minLength: 5,
   },
+  likedStyle: {
+    type: [String],
+  },
+  savedStyle: {
+    stype: [String],
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);
